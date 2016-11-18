@@ -1,0 +1,100 @@
+// buildscript {
+//     repositories {
+//         jcenter()
+//         mavenCentral()
+//     }
+//
+//     dependencies {
+//         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
+//         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
+//     }
+// }
+
+
+apply from: 'https://raw.githubusercontent.com/walfud/PutToMaven/v0.0.1/base.gradle'
+
+
+// Maven Information
+def __MAVEN_USER = getProp('MAVEN_USER')
+def __MAVEN_KEY = getProp('MAVEN_KEY')
+def __MAVEN_REPO = getProp('MAVEN_REPO')
+def __LICENSES = getProp('LICENSES')
+// User Information
+def __MY_ID = getProp('MY_ID')
+def __MY_NAME = getProp('MY_NAME')
+def __MY_EMAIL = getProp('MY_EMAIL')
+// Project Information
+def __HOME_URL = getProp('HOME_URL')
+def __VCS_URL = getProp('VCS_URL')
+// Artifact Information
+def __ARTIFACT_GROUP = getProp('ARTIFACT_GROUP')
+def __ARTIFACT_VERSION = android.defaultConfig.versionName
+def __ARTIFACT_NAME = getProp('ARTIFACT_NAME')
+
+
+apply plugin: 'com.github.dcendents.android-maven'
+apply plugin: 'com.jfrog.bintray'
+
+
+task sourcesJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    classifier = 'sources'
+}
+task javadoc(type: Javadoc) {
+    source = android.sourceSets.main.java.srcDirs
+    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
+
+    failOnError false
+}
+javadoc {
+    options {
+        encoding "UTF-8"
+        charSet 'UTF-8'
+        author true
+        version true
+        links "http://docs.oracle.com/javase/8/docs/api"
+        title __ARTIFACT_NAME
+    }
+}
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from javadoc.destinationDir
+}
+artifacts {
+    archives javadocJar
+    archives sourcesJar
+}
+
+group = __ARTIFACT_GROUP
+version = __ARTIFACT_VERSION
+archivesBaseName = __ARTIFACT_NAME
+install {
+    repositories.mavenInstaller {
+        pom {
+            project {
+                packaging 'aar'
+                url __VCS_URL
+                developers {
+                    developer {
+                        id __MY_ID
+                        name __MY_NAME
+                        email __MY_EMAIL
+                    }
+                }
+            }
+        }
+    }
+}
+bintray {
+    user = __MAVEN_USER
+    key = __MAVEN_KEY
+    configurations = ['archives']
+    pkg {
+        repo = __MAVEN_REPO
+        name = __ARTIFACT_NAME
+        websiteUrl = __HOME_URL
+        vcsUrl = __VCS_URL
+        licenses = [__LICENSES]
+        publish = true
+    }
+}
