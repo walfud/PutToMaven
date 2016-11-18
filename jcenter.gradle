@@ -19,6 +19,10 @@ def __MAVEN_USER = getProp('MAVEN_USER')
 def __MAVEN_KEY = getProp('MAVEN_KEY')
 def __MAVEN_REPO = getProp('MAVEN_REPO')
 def __LICENSES = getProp('LICENSES')
+// Artifact Information
+def __ARTIFACT_GROUP = getProp('ARTIFACT_GROUP')
+def __ARTIFACT_VERSION = android.defaultConfig.versionName
+def __ARTIFACT_NAME = getProp('ARTIFACT_NAME')
 // User Information
 def __MY_ID = getProp('MY_ID')
 def __MY_NAME = getProp('MY_NAME')
@@ -26,10 +30,6 @@ def __MY_EMAIL = getProp('MY_EMAIL')
 // Project Information
 def __HOME_URL = getProp('HOME_URL')
 def __VCS_URL = getProp('VCS_URL')
-// Artifact Information
-def __ARTIFACT_GROUP = getProp('ARTIFACT_GROUP')
-def __ARTIFACT_VERSION = android.defaultConfig.versionName
-def __ARTIFACT_NAME = getProp('ARTIFACT_NAME')
 
 
 apply plugin: 'com.github.dcendents.android-maven'
