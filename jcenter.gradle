@@ -9,7 +9,7 @@ apply from: 'https://raw.githubusercontent.com/walfud/PutToMaven/v1.0.0/base.gra
 // Maven Information
 def __MAVEN_USER = getProp('MAVEN_USER')
 def __MAVEN_KEY = getProp('MAVEN_KEY')
-def __MAVEN_ORGAN = getPropWithDefault('MAVEN_ORGAN', __MAVEN_USER)
+def __MAVEN_ORGAN = getProp('MAVEN_ORGAN')
 def __MAVEN_REPO = getProp('MAVEN_REPO')
 def __LICENSES = getProp('LICENSES')
 // Artifact Information
