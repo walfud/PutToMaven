@@ -1,28 +1,21 @@
-// buildscript {
-//     repositories {
-//         jcenter()
-//         mavenCentral()
-//     }
-//
-//     dependencies {
-//         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-//         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.2'
-//     }
+// plugins {
+//     id "com.github.dcendents.android-maven" version "1.4.1"  // https://github.com/dcendents/android-maven-gradle-plugin
+//     id "com.jfrog.bintray" version "1.7.3"                   // https://github.com/bintray/gradle-bintray-plugin
 // }
 
-
-apply from: 'https://raw.githubusercontent.com/walfud/PutToMaven/v0.0.1/base.gradle'
+apply from: 'https://raw.githubusercontent.com/walfud/PutToMaven/v1.0.0/base.gradle'
 
 
 // Maven Information
 def __MAVEN_USER = getProp('MAVEN_USER')
 def __MAVEN_KEY = getProp('MAVEN_KEY')
+def __MAVEN_ORGAN = getPropWithDefault('MAVEN_ORGAN', __MAVEN_USER)
 def __MAVEN_REPO = getProp('MAVEN_REPO')
 def __LICENSES = getProp('LICENSES')
 // Artifact Information
 def __ARTIFACT_GROUP = getProp('ARTIFACT_GROUP')
-def __ARTIFACT_VERSION = android.defaultConfig.versionName
 def __ARTIFACT_NAME = getProp('ARTIFACT_NAME')
+def __ARTIFACT_OVERRIDE = Boolean.valueOf(getProp('ARTIFACT_OVERRIDE'))
 // User Information
 def __MY_ID = getProp('MY_ID')
 def __MY_NAME = getProp('MY_NAME')
@@ -66,7 +59,7 @@ artifacts {
 }
 
 group = __ARTIFACT_GROUP
-version = __ARTIFACT_VERSION
+version = android.defaultConfig.versionName
 archivesBaseName = __ARTIFACT_NAME
 install {
     repositories.mavenInstaller {
@@ -88,13 +81,17 @@ install {
 bintray {
     user = __MAVEN_USER
     key = __MAVEN_KEY
+
     configurations = ['archives']
+    publish = true
+    override = __ARTIFACT_OVERRIDE
+
     pkg {
+        userOrg = __MAVEN_ORGAN
         repo = __MAVEN_REPO
         name = __ARTIFACT_NAME
         websiteUrl = __HOME_URL
         vcsUrl = __VCS_URL
         licenses = [__LICENSES]
-        publish = true
     }
 }
