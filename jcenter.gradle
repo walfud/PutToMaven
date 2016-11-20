@@ -12,22 +12,22 @@ def config = new Properties()
 config.load(configFile.newDataInputStream())
 
 // Maven Information
-def __MAVEN_USER = config.getProperty('MAVEN_USER', System.getenv('MAVEN_USER'))
-def __MAVEN_KEY = config.getProperty('MAVEN_KEY', System.getenv('MAVEN_KEY'))
-def __MAVEN_ORGAN = config.getProperty('MAVEN_ORGAN', System.getenv('MAVEN_ORGAN'))
-def __MAVEN_REPO = config.getProperty('MAVEN_REPO', System.getenv('MAVEN_REPO'))
-def __LICENSES = config.getProperty('LICENSES', System.getenv('LICENSES'))
+def __MAVEN_USER = getProp(config, 'MAVEN_USER')
+def __MAVEN_KEY = getProp(config, 'MAVEN_KEY')
+def __MAVEN_ORGAN = getProp(config, 'MAVEN_ORGAN')
+def __MAVEN_REPO = getProp(config, 'MAVEN_REPO')
+def __LICENSES = getProp(config, 'LICENSES')
 // Artifact Information
-def __ARTIFACT_GROUP = config.getProperty('ARTIFACT_GROUP', System.getenv('ARTIFACT_GROUP'))
-def __ARTIFACT_NAME = config.getProperty('ARTIFACT_NAME', System.getenv('ARTIFACT_NAME'))
-def __ARTIFACT_OVERRIDE = Boolean.valueOf(config.getProperty('ARTIFACT_OVERRIDE', System.getenv('ARTIFACT_OVERRIDE')))
+def __ARTIFACT_GROUP = getProp(config, 'ARTIFACT_GROUP')
+def __ARTIFACT_NAME = getProp(config, 'ARTIFACT_NAME')
+def __ARTIFACT_OVERRIDE = Boolean.valueOf(getProp(config, 'ARTIFACT_OVERRIDE'))
 // User Information
-def __MY_ID = config.getProperty('MY_ID', System.getenv('MY_ID'))
-def __MY_NAME = config.getProperty('MY_NAME', System.getenv('MY_NAME'))
-def __MY_EMAIL = config.getProperty('MY_EMAIL', System.getenv('MY_EMAIL'))
+def __MY_ID = getProp(config, 'MY_ID')
+def __MY_NAME = getProp(config, 'MY_NAME')
+def __MY_EMAIL = getProp(config, 'MY_EMAIL')
 // Project Information
-def __HOME_URL = config.getProperty('HOME_URL', System.getenv('HOME_URL'))
-def __VCS_URL = config.getProperty('VCS_URL', System.getenv('VCS_URL'))
+def __HOME_URL = getProp(config, 'HOME_URL')
+def __VCS_URL = getProp(config, 'VCS_URL')
 
 
 apply plugin: 'com.github.dcendents.android-maven'
@@ -99,4 +99,11 @@ bintray {
         vcsUrl = __VCS_URL
         licenses = [__LICENSES]
     }
+}
+
+
+def getProp(properties, key) {
+    properties.getProperty(key) != null ? properties.getProperty(key)
+            : hasProperty(key) ? getProperty(key)
+            : System.getenv(key)
 }
