@@ -103,7 +103,7 @@ bintray {
 
 
 def getProp(properties, key) {
-    properties.getProperty(key) != null ? properties.getProperty(key)
-            : hasProperty(key) ? getProperty(key)
+    hasProperty(key) ? getProperty(key)
+            : properties.getProperty(key) != null ? properties.getProperty(key)
             : System.getenv(key)
 }
