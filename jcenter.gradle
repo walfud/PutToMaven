@@ -11,23 +11,25 @@ if (!configFile.exists()) {
 def config = new Properties()
 config.load(configFile.newDataInputStream())
 
+// MISC.
+def __DEBUG = getProp(config, 'DEBUG', false)
 // Maven Information
-def __MAVEN_USER = getProp(config, 'MAVEN_USER')
-def __MAVEN_KEY = getProp(config, 'MAVEN_KEY')
-def __MAVEN_ORGAN = getProp(config, 'MAVEN_ORGAN')
-def __MAVEN_REPO = getProp(config, 'MAVEN_REPO')
-def __LICENSES = getProp(config, 'LICENSES')
+def __MAVEN_USER = getProp(config, 'MAVEN_USER', __DEBUG)
+def __MAVEN_KEY = getProp(config, 'MAVEN_KEY', __DEBUG)
+def __MAVEN_ORGAN = getProp(config, 'MAVEN_ORGAN', __DEBUG)
+def __MAVEN_REPO = getProp(config, 'MAVEN_REPO', __DEBUG)
+def __LICENSES = getProp(config, 'LICENSES', __DEBUG)
 // Artifact Information
-def __ARTIFACT_GROUP = getProp(config, 'ARTIFACT_GROUP')
-def __ARTIFACT_NAME = getProp(config, 'ARTIFACT_NAME')
-def __ARTIFACT_OVERRIDE = Boolean.valueOf(getProp(config, 'ARTIFACT_OVERRIDE'))
+def __ARTIFACT_GROUP = getProp(config, 'ARTIFACT_GROUP', __DEBUG)
+def __ARTIFACT_NAME = getProp(config, 'ARTIFACT_NAME', __DEBUG)
+def __ARTIFACT_OVERRIDE = Boolean.valueOf(getProp(config, 'ARTIFACT_OVERRIDE', __DEBUG))
 // User Information
-def __MY_ID = getProp(config, 'MY_ID')
-def __MY_NAME = getProp(config, 'MY_NAME')
-def __MY_EMAIL = getProp(config, 'MY_EMAIL')
+def __MY_ID = getProp(config, 'MY_ID', __DEBUG)
+def __MY_NAME = getProp(config, 'MY_NAME', __DEBUG)
+def __MY_EMAIL = getProp(config, 'MY_EMAIL', __DEBUG)
 // Project Information
-def __HOME_URL = getProp(config, 'HOME_URL')
-def __VCS_URL = getProp(config, 'VCS_URL')
+def __HOME_URL = getProp(config, 'HOME_URL', __DEBUG)
+def __VCS_URL = getProp(config, 'VCS_URL', __DEBUG)
 
 
 apply plugin: 'com.github.dcendents.android-maven'
@@ -102,8 +104,25 @@ bintray {
 }
 
 
-def getProp(properties, key) {
-    hasProperty(key) ? getProperty(key)
-            : properties.getProperty(key) != null ? properties.getProperty(key)
-            : System.getenv(key)
+def getProp(properties, key, debug) {
+    def value = null
+    def src = null
+
+    if (hasProperty(key)) {
+        value = getProperty(key)
+        src = 'project'
+    } else if (properties.getProperty(key) != null) {
+        value = properties.getProperty(key)
+        src = 'jcenter.properties'
+    } else {
+        value = System.getenv(key)
+        src = 'System Environment'
+    }
+
+    if (debug) {
+        def secureValue = key == 'MAVEN_KEY' ? "${value[0..1]}..[protected]..${value[-2..-1]}" : value
+        println("`${key}=${secureValue}`\t<= ${src}")
+    }
+
+    return value
 }
