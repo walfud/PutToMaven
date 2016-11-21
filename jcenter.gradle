@@ -12,7 +12,7 @@ def config = new Properties()
 config.load(configFile.newDataInputStream())
 
 // MISC.
-def __DEBUG = getProp(config, 'DEBUG', false)
+def __DEBUG = Boolean.valueOf(getProp(config, 'DEBUG', false))
 // Maven Information
 def __MAVEN_USER = getProp(config, 'MAVEN_USER', __DEBUG)
 def __MAVEN_KEY = getProp(config, 'MAVEN_KEY', __DEBUG)
